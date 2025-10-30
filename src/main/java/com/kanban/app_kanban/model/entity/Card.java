@@ -1,6 +1,5 @@
 package com.kanban.app_kanban.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,13 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "tb_board")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "tb_card")
 @Getter
 @Setter
-public class Board {
-
+@NoArgsConstructor
+@AllArgsConstructor
+public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,17 +24,15 @@ public class Board {
     private String nome;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    @JsonIgnore
-    private Usuario usuario;
+    @JoinColumn(name = "board_id")
+    private Board board;
 
-    @OneToMany(mappedBy = "board")
-    private List<Card> card = new ArrayList<>();
+    @OneToMany(mappedBy = "card")
+    private List<Tarefa> tarefas = new ArrayList<>();
 
-
-    public Board(Long id, String nome, Usuario usuario) {
+    public Card(Long id, String nome, Board board) {
         this.id = id;
         this.nome = nome;
-        this.usuario = usuario;
+        this.board = board;
     }
 }

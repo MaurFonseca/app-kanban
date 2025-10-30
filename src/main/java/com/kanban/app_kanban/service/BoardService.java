@@ -1,10 +1,12 @@
 package com.kanban.app_kanban.service;
 
+import com.kanban.app_kanban.dto.board.BoardSearch;
 import com.kanban.app_kanban.infra.security.SecurityFilter;
 import com.kanban.app_kanban.model.entity.Board;
 import com.kanban.app_kanban.model.entity.Usuario;
 import com.kanban.app_kanban.repository.BoardRepository;
 import com.kanban.app_kanban.repository.UsuarioRepository;
+import com.kanban.app_kanban.service.utilitario.UsuarioPermitido;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,19 +26,24 @@ public class BoardService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-
-    private Usuario recoverUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication != null && authentication.getPrincipal() instanceof Usuario usuario){
-            return usuario;
-        }
-        throw new RuntimeException("Usuário não autenticado");
-    }
+    @Autowired
+    private UsuarioPermitido usuarioPermitido;
 
     public List<Board> findAll(){
-        Usuario usuario = recoverUser();
-        return boardRepository.findAllByUsuarioId(usuario.getId());
+       Usuario usuario = usuarioPermitido.getAuthenticatedUserId();
+       return boardRepository.findAllByUsuarioId(usuario.getId());
+
     }
+
+    public Board findByNome(BoardSearch nome){
+        Board board = boardRepository.findByNome(nome.name());
+        if (board.getUsuario().getId() == usuarioPermitido.getAuthenticatedUserId().getId()){
+            return board;
+        }
+        return null;
+    }
+
+
 
 
 
