@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                         .frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/h2-console/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                                 .anyRequest().authenticated())
                 .build();
     }
