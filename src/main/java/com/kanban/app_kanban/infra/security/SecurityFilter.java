@@ -29,10 +29,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = recoverToken(request);
         if(token != null){
             String login = tokenService.validateToken(token);
-            UserDetails user = usuarioRepository.findByLogin(login);
-
-            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            if(login != null){ // valida se o login é válido
+                var usuario = usuarioRepository.findByLogin(login);
+                if(usuario != null){
+                    var authentication = new UsernamePasswordAuthenticationToken(usuario, null, usuario.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            }
         }
         filterChain.doFilter(request, response);
     }
@@ -43,7 +46,6 @@ public class SecurityFilter extends OncePerRequestFilter {
         if(authHeader == null){
             return null;
         }
-        authHeader.replace("Bearer", "");
-        return authHeader;
+        return authHeader.replace("Bearer ", "");
     }
 }

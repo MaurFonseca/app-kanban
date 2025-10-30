@@ -22,7 +22,7 @@ public class TokenService {
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
-                    .withIssuer("kaban-app")
+                    .withIssuer("kanban-app")
                     .withSubject(usuario.getLogin())
                     .withExpiresAt(generateExpDate())
                     .sign(algorithm);
@@ -46,7 +46,7 @@ public class TokenService {
                     .getSubject();
             return valid;
         }catch (JWTVerificationException e ){
-            return "";
+            return null;
         }
 
     }

@@ -1,5 +1,6 @@
 package com.kanban.app_kanban.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kanban.app_kanban.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +37,19 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
+    @OneToMany(mappedBy = "usuario")
+    @Setter(AccessLevel.NONE)
+    @Builder.Default
+    @JsonIgnore
+    private List<Board> boards = new ArrayList<>();
+
+    public Usuario(String login, String nome, String senha, UserRole role) {
+        this.login = login;
+        this.nome = nome;
+        this.senha = senha;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
