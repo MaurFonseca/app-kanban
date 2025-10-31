@@ -1,4 +1,9 @@
 package com.kanban.app_kanban.dto.card;
 
-public record CardResponse (String nome, String boardName){
+import com.kanban.app_kanban.dto.tarefa.TarefaResponse;
+import com.kanban.app_kanban.model.entity.Tarefa;
+
+import java.util.List;
+
+public record CardResponse (String nomeCard, List<TarefaResponse> tarefas){
 }

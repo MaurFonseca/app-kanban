@@ -1,19 +1,13 @@
 package com.kanban.app_kanban.service;
 
-import com.kanban.app_kanban.dto.board.BoardSearch;
-import com.kanban.app_kanban.infra.security.SecurityFilter;
+import com.kanban.app_kanban.dto.board.BoardResponse;
 import com.kanban.app_kanban.model.entity.Board;
 import com.kanban.app_kanban.model.entity.Usuario;
 import com.kanban.app_kanban.repository.BoardRepository;
 import com.kanban.app_kanban.repository.UsuarioRepository;
+import com.kanban.app_kanban.service.utilitario.MapResponses;
 import com.kanban.app_kanban.service.utilitario.UsuarioPermitido;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,19 +23,28 @@ public class BoardService {
     @Autowired
     private UsuarioPermitido usuarioPermitido;
 
-    public List<Board> findAll(){
-       Usuario usuario = usuarioPermitido.getAuthenticatedUserId();
-       return boardRepository.findAllByUsuarioId(usuario.getId());
+    @Autowired
+    private MapResponses mapResponses;
 
+    public List<BoardResponse> findAll(){
+       Usuario usuario = usuarioPermitido.getAuthenticatedUserId();
+       List<Board> boards = boardRepository.findAllByUsuarioId(usuario.getId());
+       List<BoardResponse> boardResponses = boards.stream().map(x -> mapResponses.toBoardResponse(x)).toList();
+        return boardResponses;
     }
 
-    public Board findByNome(BoardSearch nome){
-        Board board = boardRepository.findByNome(nome.name());
-        if (board.getUsuario().getId() == usuarioPermitido.getAuthenticatedUserId().getId()){
-            return board;
+    public BoardResponse findByNome(String nome){
+        Board board = boardRepository.findByNome(nome);
+        if (board.getUsuario().getId().equals(usuarioPermitido.getAuthenticatedUserId().getId())){
+            return mapResponses.toBoardResponse(board);
         }
         return null;
     }
+
+    public BoardResponse criarBoard(Board){
+
+    }
+
 
 
 

@@ -5,8 +5,7 @@ import com.kanban.app_kanban.model.enums.StatusTarefa;
 
 import java.time.LocalDateTime;
 
-public record TarefaResponse(String nomeBoard,
-                             String nomeCard,
+public record TarefaResponse(
                              String titulo,
                              String descricao,
                              StatusTarefa statusTarefa,

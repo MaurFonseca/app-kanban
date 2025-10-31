@@ -9,6 +9,7 @@ import com.kanban.app_kanban.model.enums.StatusTarefa;
 import com.kanban.app_kanban.repository.BoardRepository;
 import com.kanban.app_kanban.repository.CardRepository;
 import com.kanban.app_kanban.repository.TarefaRepository;
+import com.kanban.app_kanban.service.utilitario.MapResponses;
 import com.kanban.app_kanban.service.utilitario.UsuarioPermitido;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,8 @@ public class TarefaService {
     @Autowired
     private UsuarioPermitido usuarioPermitido;
 
-    public TarefaResponse toTarefaResponse(Tarefa tarefa){
-        TarefaResponse response = new TarefaResponse(
-                tarefa.getCard().getBoard().getNome(), tarefa.getCard().getNome(), tarefa.getTitulo(), tarefa.getDescricao(),
-                tarefa.getStatus(), tarefa.getDataCriacao(), tarefa.getDataPrevista(), tarefa.getDataConclusao());
-        return response;
-    }
+    @Autowired
+    private MapResponses mapResponses;
 
     public TarefaResponse criarTarefa(TarefaRequest request){
         log.info("idCard recebido: " + request.idCard());
@@ -64,7 +61,7 @@ public class TarefaService {
                     .card(card)
                     .build();
             tarefaRepository.save(tarefa);
-            return toTarefaResponse(tarefa);
+            return mapResponses.tarefaResponse(tarefa);
         }
         throw new RuntimeException("Usuário não autorizado para criar tarefa neste board");
     }
