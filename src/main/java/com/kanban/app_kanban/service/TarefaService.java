@@ -77,6 +77,9 @@ public class TarefaService {
             return null;
         }
         tarefa.setStatus(atualizar.statusTarefa());
+        if (tarefa.getStatus() == StatusTarefa.CONCLUIDA){
+            tarefa.setDataConclusao(LocalDateTime.now());
+        }
         tarefaRepository.save(tarefa);
         return mapResponses.tarefaResponse(tarefa);
     }
