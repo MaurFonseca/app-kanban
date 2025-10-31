@@ -9,7 +9,7 @@ import java.util.List;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findAllByUsuarioId(Long login);
 
-    Board findByNome(String nome);
+    Board findByNomeAndUsuarioId(String nome, Long id);
 
     Board findByCardId(Long id);
 }

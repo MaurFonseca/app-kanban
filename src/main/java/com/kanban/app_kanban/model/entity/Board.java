@@ -2,10 +2,7 @@ package com.kanban.app_kanban.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +28,7 @@ public class Board {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "board")
+    @Setter(AccessLevel.NONE)
     private List<Card> card = new ArrayList<>();
 
 

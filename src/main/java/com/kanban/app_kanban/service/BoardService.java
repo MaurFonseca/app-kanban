@@ -1,5 +1,6 @@
 package com.kanban.app_kanban.service;
 
+import com.kanban.app_kanban.dto.board.BoardRequest;
 import com.kanban.app_kanban.dto.board.BoardResponse;
 import com.kanban.app_kanban.model.entity.Board;
 import com.kanban.app_kanban.model.entity.Usuario;
@@ -34,15 +35,27 @@ public class BoardService {
     }
 
     public BoardResponse findByNome(String nome){
-        Board board = boardRepository.findByNome(nome);
+        Board board = boardRepository.findByNomeAndUsuarioId(nome, usuarioPermitido.getAuthenticatedUserId().getId());
         if (board.getUsuario().getId().equals(usuarioPermitido.getAuthenticatedUserId().getId())){
             return mapResponses.toBoardResponse(board);
         }
         return null;
     }
 
-    public BoardResponse criarBoard(Board){
+    public BoardResponse criarBoard(BoardRequest request){
+        Board board = new Board(null, request.nome(), usuarioPermitido.getAuthenticatedUserId());
+        boardRepository.save(board);
+        return mapResponses.toBoardResponse(board);
+    }
 
+    public BoardResponse atualizarBoard(String nome, BoardRequest request){
+        Board board = boardRepository.findByNomeAndUsuarioId(nome, usuarioPermitido.getAuthenticatedUserId().getId() );
+        if (!board.getUsuario().equals(usuarioPermitido.getAuthenticatedUserId())){
+            throw new RuntimeException("Acesso Negado");
+        }
+        board.setNome(request.nome());
+        boardRepository.save(board);
+        return mapResponses.toBoardResponse(board);
     }
 
 
