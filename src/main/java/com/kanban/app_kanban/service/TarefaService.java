@@ -1,5 +1,7 @@
 package com.kanban.app_kanban.service;
 
+import com.kanban.app_kanban.dto.tarefa.TarefaAtualizar;
+import com.kanban.app_kanban.dto.tarefa.TarefaMoverCard;
 import com.kanban.app_kanban.dto.tarefa.TarefaRequest;
 import com.kanban.app_kanban.dto.tarefa.TarefaResponse;
 import com.kanban.app_kanban.model.entity.Board;
@@ -64,5 +66,32 @@ public class TarefaService {
             return mapResponses.tarefaResponse(tarefa);
         }
         throw new RuntimeException("Usuário não autorizado para criar tarefa neste board");
+    }
+
+    public TarefaResponse autalizarStatus(Long id ,TarefaAtualizar atualizar){
+        Tarefa tarefa = tarefaRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        if (!tarefa.getCard().getBoard().getUsuario().getId().equals(usuarioPermitido.getAuthenticatedUserId().getId())){
+            throw new RuntimeException("Acesso negado");
+        }
+        if (tarefa.getStatus() == atualizar.statusTarefa()){
+            return null;
+        }
+        tarefa.setStatus(atualizar.statusTarefa());
+        tarefaRepository.save(tarefa);
+        return mapResponses.tarefaResponse(tarefa);
+    }
+
+    public TarefaResponse atualizarCardTarefa(Long id, TarefaMoverCard moverCard){
+        Card card = cardRepository.findById(moverCard.idCard()).orElseThrow(()-> new RuntimeException("Card Não encontrado"));
+        Tarefa tarefa = tarefaRepository.findById(id).orElseThrow(() -> new RuntimeException("Tarefa não encontrada"));
+        if (!tarefa.getCard().getBoard().getUsuario().getId().equals(usuarioPermitido.getAuthenticatedUserId().getId())){
+            throw new RuntimeException("Acesso negado");
+        }
+        if (tarefa.getCard().getId().equals(moverCard.idCard())){
+            return null;
+        }
+        tarefa.setCard(card);
+        tarefaRepository.save(tarefa);
+        return mapResponses.tarefaResponse(tarefa);
     }
 }

@@ -26,7 +26,7 @@ public class MapResponses {
     }
 
     public TarefaResponse tarefaResponse(Tarefa tarefa){
-        TarefaResponse tarefaResponse = new TarefaResponse(tarefa.getTitulo(), tarefa.getDescricao(),
+        TarefaResponse tarefaResponse = new TarefaResponse(tarefa.getId(), tarefa.getTitulo(), tarefa.getDescricao(), tarefa.getCard().getId(),
                 tarefa.getStatus(), tarefa.getDataCriacao(), tarefa.getDataPrevista(), tarefa.getDataConclusao());
         return tarefaResponse;
     }

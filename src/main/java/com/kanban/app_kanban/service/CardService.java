@@ -27,8 +27,8 @@ public class CardService {
     private MapResponses mapResponses;
 
     public CardResponse criarCard(CardRequest request){
-        Board board = boardRepository.findById(request.id()).orElseThrow(()-> new RuntimeException("Board não encontrado"));
-        if (board.getUsuario().getId() == usuarioPermitido.getAuthenticatedUserId().getId()){
+        Board board = boardRepository.findByNomeAndUsuarioId(request.nomeBoard(),usuarioPermitido.getAuthenticatedUserId().getId());
+        if (board.getUsuario().getId().equals(usuarioPermitido.getAuthenticatedUserId().getId())){
             Card card = new Card(null, request.nome(), board);
             cardRepository.save(card);
             return mapResponses.toCardResponse(card);
