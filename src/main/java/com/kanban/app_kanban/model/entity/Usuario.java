@@ -1,6 +1,7 @@
 package com.kanban.app_kanban.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.kanban.app_kanban.dto.usuario.UsuarioRegisterRequest;
 import com.kanban.app_kanban.model.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -49,6 +50,12 @@ public class Usuario implements UserDetails {
         this.nome = nome;
         this.senha = senha;
         this.role = role;
+    }
+
+    public Usuario(UsuarioRegisterRequest data) {
+        this.login = data.login();
+        this.nome = data.nome();
+        this.senha = data.senha();
     }
 
     @Override
